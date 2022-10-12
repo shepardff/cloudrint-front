@@ -1,21 +1,18 @@
-import Header from '../components/Header';
 import Hero from '../components/Hero';
 import PrintPhotoForm from '../components/PrintPhoto';
-import Footer from '../components/Footer';
 import Content from '../components/Content';
 import UploadPhoto from '../components/UploadPhoto';
+import PageContainer from '../components/PageContainer';
 
 const HomePage = () => {
   return (
-    <>
-      <Header />
+    <PageContainer>
       <Content>
         <Hero />
         <PrintPhotoForm />
         <UploadPhoto />
       </Content>
-      <Footer />
-    </>
+    </PageContainer>
   );
 };
 
