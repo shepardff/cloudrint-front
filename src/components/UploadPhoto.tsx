@@ -1,34 +1,24 @@
 import React, { useRef } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 
 import loaderStore from '../store/loaderStore';
 
 import Button from './Button';
-import { RightIcon } from '../assets';
-import { Box } from '@mui/material';
-
-const UploadPhotoButton = styled(Button)`
-  align-self: flex-end;
-  margin-top: 50px;
-  padding-right: 30px;
-  padding-left: 30px;
-
-  @media (max-width: 1100px) {
-    align-self: center;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-`;
 
 interface Uploaded {
   count: number;
   images: string[];
 }
 
-const UploadPhoto = observer(() => {
+interface Props {
+  buttonText: string;
+  icon?: React.ReactElement;
+  className?: string;
+}
+
+const UploadPhoto = observer((props: Props) => {
   const fileInput = useRef<HTMLInputElement>(null);
   const url = 'http://127.0.0.1:5000/file';
   const config = {
@@ -51,6 +41,10 @@ const UploadPhoto = observer(() => {
 
       const uploaded: Uploaded = { count: 0, images: [] };
 
+      if (localStorage.getItem('images')) {
+        uploaded.images.push(...JSON.parse(localStorage.getItem('images') || '{}'));
+      }
+
       for (let i = 0; i < length; i++) {
         const formData = new FormData();
 
@@ -66,7 +60,8 @@ const UploadPhoto = observer(() => {
 
           if (uploaded.count === length) {
             loaderStore.active(false);
-            navigate('/order/123/photos', { state: { images: uploaded.images } });
+            navigate('/order/123/photos');
+            window.location.reload();
           }
         });
       }
@@ -74,12 +69,12 @@ const UploadPhoto = observer(() => {
   };
 
   return (
-    <Box display={'flex'} component="form" flexDirection={'column'}>
+    <>
       <input type="file" style={{ display: 'none' }} ref={fileInput} onChange={handleChange} multiple />
-      <UploadPhotoButton endIcon={<RightIcon />} onClick={uploadFile}>
-        ЗАГРУЗИТЬ ФОТО
-      </UploadPhotoButton>
-    </Box>
+      <Button className={props.className} endIcon={props.icon} onClick={uploadFile}>
+        {props.buttonText}
+      </Button>
+    </>
   );
 });
 

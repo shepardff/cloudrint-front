@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
@@ -12,20 +11,23 @@ import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import Footer from '../components/Footer';
 import Content from '../components/Content';
+import UploadPhoto from '../components/UploadPhoto';
 
 const OrderItem = styled.div`
   position: relative;
   background-color: #f2efef;
-  width: 23%;
+  width: 260px;
   height: 350px;
   margin-bottom: 70px;
 
   @media (max-width: 900px) {
-    width: 30%;
+    width: 250px;
+    height: 300px;
   }
 
   @media (max-width: 500px) {
-    width: 45%;
+    width: 200px;
+    height: 250px;
   }
 `;
 
@@ -47,11 +49,24 @@ const OrderButton = styled(IconButton)`
   margin-left: 7px;
   background-color: white;
   border: 3px solid ${props => props.theme.colors.carrotOrange};
+
+  &:hover {
+    background-color: #e4e3e3;
+  }
 `;
 
-interface UploadedImages {
-  images: string[];
+const AddPhoto = styled(UploadPhoto)`
+  margin-top: 30px;
+  margin-right: 20px;
+`;
+
+interface LoadMoreProps {
+  more: boolean;
 }
+
+const LoadMoreButton = styled(Button)<LoadMoreProps>`
+  display: ${props => (props.more ? 'block' : 'none')};
+`;
 
 const getPreview = async (imgId: string[]): Promise<string[]> => {
   const url = 'http://127.0.0.1:5000/file/preview';
@@ -66,29 +81,53 @@ const getPreview = async (imgId: string[]): Promise<string[]> => {
 };
 
 const PhotoPage = () => {
-  const location = useLocation();
-  const state = location.state as UploadedImages;
-  const [imagesArr, setImages] = useState([] as string[]);
+  const [images, setImages] = useState([] as string[]);
+  const [page, setPage] = useState(0 as number);
+
+  const count = [...JSON.parse(localStorage.getItem('images') || '{}')].length;
 
   useEffect(() => {
-    getPreview(state.images)
-      .then(res => res)
-      .then(res => setImages([...res]));
-  }, []);
+    let nextPage = page + 12;
+    if (nextPage > count) {
+      nextPage = count;
+    }
+
+    if (localStorage.getItem('images')) {
+      getPreview([...JSON.parse(localStorage.getItem('images') || '{}')].splice(page, nextPage)).then(res =>
+        setImages([...images, ...res])
+      );
+    }
+  }, [page]);
+
+  const deleteItem = (index: number) => {
+    const storeImages = JSON.parse(localStorage.getItem('images') || '{}');
+    const imagesArr = [...images];
+    if (storeImages.length === 1) {
+      localStorage.removeItem('images');
+      setImages([]);
+    } else {
+      storeImages.splice(index, 1);
+      imagesArr.splice(index, 1);
+      localStorage.setItem('images', JSON.stringify(storeImages));
+      setImages([...imagesArr]);
+    }
+  };
+
+  const loadMore = () => {
+    console.log('load more');
+  };
 
   return (
     <>
       <Header />
       <Content>
         <Navigation />
-        <Button style={{ marginTop: '30px', marginRight: '20px' }} endIcon={<PlusIcon />}>
-          ДОБАВИТЬ ФОТО
-        </Button>
+        <AddPhoto buttonText={'ДОБАВИТЬ ФОТО'} icon={<PlusIcon />} />
         <Button style={{ marginTop: '30px' }} endIcon={<SettingsIcon />}>
           НАСТРОЙКИ
         </Button>
-        <Grid container marginTop={'70px'} justifyContent={'space-between'}>
-          {imagesArr.map((item, index) => {
+        <Grid container marginTop={'70px'} justifyContent={'space-around'}>
+          {images.map((item, index) => {
             return (
               <OrderItem key={index}>
                 <OrderImage src={'data:image/png;base64, ' + item} />
@@ -96,7 +135,7 @@ const PhotoPage = () => {
                   <OrderButton>
                     <CreateIcon />
                   </OrderButton>
-                  <OrderButton>
+                  <OrderButton onClick={() => deleteItem(index)}>
                     <CloseIcon />
                   </OrderButton>
                 </OrderButtonContainer>
@@ -105,7 +144,9 @@ const PhotoPage = () => {
           })}
         </Grid>
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <Button style={{ paddingLeft: '30px', paddingRight: '30px' }}>ЗАГРУЗИТЬ ЕЩË</Button>
+          <LoadMoreButton onClick={() => setPage(page + 13)} more={count - page > 12}>
+            ЗАГРУЗИТЬ ЕЩЕ
+          </LoadMoreButton>
         </div>
       </Content>
       <Footer />
