@@ -83,21 +83,31 @@ const getPreview = async (imgId: string[]): Promise<string[]> => {
 const PhotoPage = () => {
   const [images, setImages] = useState([] as string[]);
   const [page, setPage] = useState(0 as number);
-
-  const count = [...JSON.parse(localStorage.getItem('images') || '{}')].length;
+  const [countImages, setCountImages] = useState(0 as number);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    let nextPage = page + 12;
-    if (nextPage > count) {
-      nextPage = count;
-    }
-
     if (localStorage.getItem('images')) {
-      getPreview([...JSON.parse(localStorage.getItem('images') || '{}')].splice(page, nextPage)).then(res =>
+      let count = [...JSON.parse(localStorage.getItem('images') || '{}')].length;
+      setCountImages(count);
+      let nextPage = images.length + 12;
+      if (nextPage > count) {
+        nextPage = count;
+      }
+
+      getPreview([...JSON.parse(localStorage.getItem('images') || '{}')].splice(images.length, nextPage)).then(res =>
         setImages([...images, ...res])
       );
     }
   }, [page]);
+
+  useEffect(() => {
+    if (countImages === 0) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
+  }, [countImages]);
 
   const deleteItem = (index: number) => {
     const storeImages = JSON.parse(localStorage.getItem('images') || '{}');
@@ -105,16 +115,17 @@ const PhotoPage = () => {
     if (storeImages.length === 1) {
       localStorage.removeItem('images');
       setImages([]);
+      setCountImages(0);
     } else {
       storeImages.splice(index, 1);
       imagesArr.splice(index, 1);
       localStorage.setItem('images', JSON.stringify(storeImages));
       setImages([...imagesArr]);
+      setCountImages(storeImages.length);
+      if (imagesArr.length < 8 && storeImages.length >= 8) {
+        setPage(page + 1);
+      }
     }
-  };
-
-  const loadMore = () => {
-    console.log('load more');
   };
 
   return (
@@ -143,8 +154,10 @@ const PhotoPage = () => {
             );
           })}
         </Grid>
+
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <LoadMoreButton onClick={() => setPage(page + 13)} more={count - page > 12}>
+          {loaded && <h3>Нет загруженных изображений</h3>}
+          <LoadMoreButton onClick={() => setPage(page + 1)} more={images.length > 0 && images.length < countImages}>
             ЗАГРУЗИТЬ ЕЩЕ
           </LoadMoreButton>
         </div>
