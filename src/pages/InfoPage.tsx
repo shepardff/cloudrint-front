@@ -5,11 +5,18 @@ import Footer from '../components/Footer';
 import Typography from '../components/Typography';
 
 const InfoPage = () => {
+  const navigationProps = {
+    backLink: '/',
+    backLinkName: 'главная',
+    forwardLink: '/',
+    forwardLinkName: '',
+  };
+
   return (
     <>
       <Header />
       <Content>
-        <Navigation />
+        <Navigation navigation={navigationProps} />
         <div style={{ marginTop: '100px' }}>
           <Typography mb={2}>
             Оплата заказов производится только с лицевого счёта аккаунта на cloudrint.ru. Пополните лицевой счёт можно с

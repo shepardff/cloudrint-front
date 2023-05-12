@@ -13,15 +13,33 @@ const NavigationButton = styled(Button).attrs(props => ({
   },
 }))``;
 
-const Navigation = () => {
+interface NavigationProps {
+  navigation: {
+    backLink: string;
+    backLinkName: string;
+    forwardLink: string;
+    forwardLinkName: string;
+  };
+}
+
+const Navigation = (props: NavigationProps) => {
+  console.log(props);
   return (
     <Grid container justifyContent={'space-between'} mt={3}>
       <Grid>
-        <NavigationButton startIcon={<ArrowBackIcon sx={{ fontSize: '25px !important' }} />}>Мои фото</NavigationButton>
+        <NavigationButton
+          startIcon={<ArrowBackIcon sx={{ fontSize: '25px !important' }} />}
+          href={props.navigation.backLink}
+        >
+          {props.navigation.backLinkName}
+        </NavigationButton>
       </Grid>
       <Grid>
-        <NavigationButton endIcon={<ChevronRightIcon sx={{ fontSize: '25px !important' }} />}>
-          Продолжить
+        <NavigationButton
+          endIcon={<ChevronRightIcon sx={{ fontSize: '25px !important' }} />}
+          href={props.navigation.forwardLink}
+        >
+          {props.navigation.forwardLinkName}
         </NavigationButton>
       </Grid>
     </Grid>

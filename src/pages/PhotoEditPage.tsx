@@ -27,11 +27,18 @@ const PhotoButton = styled(IconButton)`
 `;
 
 const PhotoEditPage = () => {
+  const navigationProps = {
+    backLink: '/',
+    backLinkName: 'главная',
+    forwardLink: '/',
+    forwardLinkName: '',
+  };
+
   return (
     <>
       <Header />
       <Content>
-        <Navigation />
+        <Navigation navigation={navigationProps} />
         <Grid container justifyContent={'space-between'} mt={4}>
           <Grid
             sx={{

@@ -41,8 +41,8 @@ function App() {
       >
         <BrowserRouter>
           <Routes>
-            <Route path="/order/:id" element={<SettingsPage />} />
-            <Route path="/order/:id/photos" element={<PhotoPage />} />
+            <Route path="/order/settings" element={<SettingsPage />} />
+            <Route path="/order/photos" element={<PhotoPage />} />
             <Route path="/order" element={<OrderPage />} />
             <Route path="/photo/edit" element={<PhotoEditPage />} />
             <Route path="/info" element={<InfoPage />} />

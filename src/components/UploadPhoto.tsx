@@ -60,7 +60,7 @@ const UploadPhoto = observer((props: Props) => {
 
           if (uploaded.count === length) {
             loaderStore.active(false);
-            navigate('/order/123/photos');
+            navigate('/order/photos');
             window.location.reload();
           }
         });

@@ -61,11 +61,11 @@ const AddPhoto = styled(UploadPhoto)`
 `;
 
 interface LoadMoreProps {
-  more: boolean;
+  $more: boolean;
 }
 
 const LoadMoreButton = styled(Button)<LoadMoreProps>`
-  display: ${props => (props.more ? 'block' : 'none')};
+  display: ${props => (props.$more ? 'block' : 'none')};
 `;
 
 const getPreview = async (imgId: string[]): Promise<string[]> => {
@@ -85,6 +85,13 @@ const PhotoPage = () => {
   const [page, setPage] = useState(0 as number);
   const [countImages, setCountImages] = useState(0 as number);
   const [loaded, setLoaded] = useState(false);
+
+  const navigationProps = {
+    backLink: '/',
+    backLinkName: 'главная',
+    forwardLink: '/order',
+    forwardLinkName: 'оформить заказ',
+  };
 
   useEffect(() => {
     if (localStorage.getItem('images')) {
@@ -132,9 +139,9 @@ const PhotoPage = () => {
     <>
       <Header />
       <Content>
-        <Navigation />
+        <Navigation navigation={navigationProps} />
         <AddPhoto buttonText={'ДОБАВИТЬ ФОТО'} icon={<PlusIcon />} />
-        <Button style={{ marginTop: '30px' }} endIcon={<SettingsIcon />}>
+        <Button style={{ marginTop: '30px' }} endIcon={<SettingsIcon />} href="/order/settings">
           НАСТРОЙКИ
         </Button>
         <Grid container marginTop={'70px'} justifyContent={'space-around'}>
@@ -157,7 +164,7 @@ const PhotoPage = () => {
 
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           {loaded && <h3>Нет загруженных изображений</h3>}
-          <LoadMoreButton onClick={() => setPage(page + 1)} more={images.length > 0 && images.length < countImages}>
+          <LoadMoreButton onClick={() => setPage(page + 1)} $more={images.length > 0 && images.length < countImages}>
             ЗАГРУЗИТЬ ЕЩЕ
           </LoadMoreButton>
         </div>

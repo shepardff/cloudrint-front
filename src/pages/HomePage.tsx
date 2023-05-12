@@ -28,7 +28,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (localStorage.getItem('images')) {
-      navigate('/order/123/photos');
+      navigate('/order/photos');
     }
   });
 

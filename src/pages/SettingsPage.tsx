@@ -5,11 +5,18 @@ import Footer from '../components/Footer';
 import Content from '../components/Content';
 
 const SettingsPage = () => {
+  const navigationProps = {
+    backLink: '/order/photos',
+    backLinkName: 'фотографии',
+    forwardLink: '/',
+    forwardLinkName: 'на хуй',
+  };
+
   return (
     <>
       <Header />
       <Content>
-        <Navigation />
+        <Navigation navigation={navigationProps} />
         <PrintPhoto />
       </Content>
       <Footer />

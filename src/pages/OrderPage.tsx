@@ -20,11 +20,18 @@ const StyledInput = styled.input`
 `;
 
 const HomePage = () => {
+  const navigationProps = {
+    backLink: '/order/photos',
+    backLinkName: 'фотографии',
+    forwardLink: '/',
+    forwardLinkName: 'на хуй',
+  };
+
   return (
     <>
       <Header />
       <Content>
-        <Navigation />
+        <Navigation navigation={navigationProps} />
         <Typography fontSize={'18px'} mt={4}>
           ОФОРМЛЕНИЕ ЗАКАЗА
         </Typography>
