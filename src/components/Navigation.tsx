@@ -23,7 +23,6 @@ interface NavigationProps {
 }
 
 const Navigation = (props: NavigationProps) => {
-  console.log(props);
   return (
     <Grid container justifyContent={'space-between'} mt={3}>
       <Grid>

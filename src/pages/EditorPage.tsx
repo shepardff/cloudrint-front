@@ -51,8 +51,6 @@ const EditorPage = () => {
 
         nObj['content'] = canvas.toDataURL();
 
-        console.log('SIZES', nObj);
-
         resolve(nObj);
       };
 
@@ -126,7 +124,6 @@ const EditorPage = () => {
     convertImg();
 
     canvas.on('object:moving', (obj: any) => {
-      console.log(obj.target.left, obj.target.top);
       canvas.getObjects().map((nObj: any) => {
         if (nObj.name === 'selected' || nObj.name === 'movingRect') {
           nObj.set('top', obj.target.top);
